@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taluka Data App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Taluka Data App</h1>
+
+    <label for="talukaSelect">Select Taluka: </label>
+    <select id="talukaSelect">
+        <!-- Options will be dynamically added using JavaScript -->
+    </select>
+
+    <label for="ageCategorySelect">Select Age Category: </label>
+    <select id="ageCategorySelect">
+        <!-- Options will be dynamically added using JavaScript -->
+    </select>
+
+    <button onclick="getSelectedTalukaData()">Get Taluka Data</button>
+
+    <div id="result"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const talukaSelect = document.getElementById('talukaSelect');
+        const ageCategorySelect = document.getElementById('ageCategorySelect');
+        const resultDiv = document.getElementById('result');
+        let data; // Store the data globally
+
+        // Function to populate taluka options
+        const populateTalukaOptions = async () => {
+            try {
+                const res = await axios.get("http://mehdb.vercel.app/agepops");
+                data = res.data;
+
+                // Add options to the taluka select element
+                data.forEach((talukaData, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.text = talukaData.Taluka;
+                    talukaSelect.add(option);
+                });
+
+                // Get the first taluka's age categories to populate the age category select element
+                const firstTalukaData = data[0];
+                populateAgeCategories(firstTalukaData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        // Function to populate age category options based on the structure of data
+        const populateAgeCategories = (talukaData) => {
+            // Clear existing options
+            ageCategorySelect.innerHTML = '';
+
+            // Get all properties starting with a number (assuming these are age categories)
+            const ageCategories = Object.keys(talukaData).filter(property => /^\d/.test(property));
+
+            // Add "Total" option
+            const totalOption = document.createElement('option');
+            totalOption.value = 'Total';
+            totalOption.text = 'Total';
+            ageCategorySelect.add(totalOption);
+
+            // Add options to the age category select element
+            ageCategories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.text = category.replace(/_/g, ' '); // Replace underscores with spaces
+                ageCategorySelect.add(option);
+            });
+        };
+
+        // Function to get and display taluka data
+        const getSelectedTalukaData = async () => {
+            const selectedIndex = talukaSelect.value;
+            const selectedAgeCategory = ageCategorySelect.value;
+            try {
+                // Display data for the selected taluka and age category
+                const talukaData = data[selectedIndex];
+                let total;
+                if (selectedAgeCategory === 'Total') {
+                    total = talukaData.Total;
+                } else {
+                    total = talukaData[selectedAgeCategory];
+                }
+
+                resultDiv.innerHTML = `<p>Total for ${talukaData.Taluka} (${selectedAgeCategory}): ${total}</p>`;
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        // Event listener for taluka select change to update age category options
+        talukaSelect.addEventListener('change', () => {
+            const selectedIndex = talukaSelect.value;
+            const selectedTalukaData = data[selectedIndex];
+            populateAgeCategories(selectedTalukaData);
+        });
+
+        // Populate taluka options on page load
+        populateTalukaOptions();
+    </script>
+
+</body>
+</html>
