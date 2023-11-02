@@ -9,51 +9,51 @@ const loginController = {
     const srno = generateSrno();
 
     try {
-      const existingUser = await LoginData.findOne({
+      LoginData.findOne({
         $or: [{ username }, { email: username }],
+      }).then((existingUser) => {
+        if (existingUser) {
+
+          bcrypt.compare(password, existingUser.encryptedPassword).then((passwordMatch) => {
+            if (passwordMatch) {
+              const newLoginEntry = new LoginData({
+                username,
+                encryptedPassword: existingUser.encryptedPassword,
+                timeOfLogin,
+                date,
+                srno,
+              });
+
+              newLoginEntry.save().then(() => {
+                return res.status(200).json({ message: "Login successful!" });
+              }).catch((error) => {
+                console.error("Error during login:", error);
+                return res.status(500).json({ message: "Internal server error" });
+              });
+              console.log("Login successful!"
+              )
+            } else {
+              console.log("Provided Password:", password);
+              console.log(
+                "Encrypted Password in Database:",
+                existingUser.encryptedPassword
+              );
+              console.log("Password Match Result:", passwordMatch);
+
+              return res
+                .status(401)
+                .json({ message: "Invalid password. Please try again." });
+            }
+          });
+
+        }
       });
-
-      if (!existingUser) {
-        return res
-          .status(401)
-          .json({ message: "User does not exist. Please register." });
-      }
-
-      // Compare the provided password with the hashed password in the database
-      const passwordMatch = await bcrypt.compare(
-        password,
-        existingUser.encryptedPassword
-      );
-
-      if (!passwordMatch) {
-        console.log("Provided Password:", password);
-        console.log(
-          "Encrypted Password in Database:",
-          existingUser.encryptedPassword
-        );
-        console.log("Password Match Result:", passwordMatch);
-
-        return res
-          .status(401)
-          .json({ message: "Invalid password. Please try again." });
-      }
-
-      const newLoginEntry = new LoginData({
-        username,
-        encryptedPassword: existingUser.encryptedPassword,
-        timeOfLogin,
-        date,
-        srno,
-      });
-
-      await newLoginEntry.save();
-
-      return res.status(200).json({ message: "Login successful!" });
     } catch (error) {
       console.error("Error during password comparison:", error);
       return res.status(500).json({ message: "Internal server error" });
     }
-  },
-};
 
+  },
+
+};
 module.exports = loginController;
