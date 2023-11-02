@@ -1,4 +1,4 @@
-const LoginData = require("../models/logindata");
+const registerData = require("../models/registerdata");
 const bcrypt = require("bcrypt");
 const {
   getCurrentTime,
@@ -8,12 +8,12 @@ const {
 
 const registerUser = async (req, res) => {
   const { username, password, role, firstName, lastName, email } = req.body;
-  const timeOfLogin = getCurrentTime();
+  const timeOfRegister = getCurrentTime();
   const date = getCurrentDate();
   const srno = generateSrno();
 
   try {
-    const existingUser = await LoginData.findOne({
+    const existingUser = await registerData.findOne({
       $or: [{ username }, { email }],
     });
 
@@ -26,11 +26,11 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log("Hashed Password:", hashedPassword);
 
-    const newLoginEntry = new LoginData({
+    const newRegisterEntry = new registerData({
       username,
       email, // Include email in the data
       encryptedPassword: hashedPassword,
-      timeOfLogin,
+      timeOfRegister,
       date,
       srno,
       role,
@@ -38,7 +38,7 @@ const registerUser = async (req, res) => {
       lastName,
     });
 
-    await newLoginEntry.save();
+    await newRegisterEntry.save();
 
     return res.status(201).json({ message: "Registration successful!" });
   } catch (error) {

@@ -1,15 +1,16 @@
 const LoginData = require("../models/logindata");
+const registerData = require("../models/registerdata");
 const bcrypt = require("bcrypt");
-const { getCurrentTime, generateSrno } = require("../utils/utils");
+const { getCurrentTime, generateSrno, getCurrentDate } = require("../utils/utils.js");
 
 const loginController = {
   login: async (req, res) => {
     const { username, password } = req.body;
-    const { timeOfLogin, date } = getCurrentTime();
+    const timeOfLogin = getCurrentTime();
+    const date = getCurrentDate();
     const srno = generateSrno();
-
     try {
-      LoginData.findOne({
+      registerData.findOne({
         $or: [{ username }, { email: username }],
       }).then((existingUser) => {
         if (existingUser) {
@@ -30,8 +31,6 @@ const loginController = {
                 console.error("Error during login:", error);
                 return res.status(500).json({ message: "Internal server error" });
               });
-              console.log("Login successful!"
-              )
             } else {
               console.log("Provided Password:", password);
               console.log(
