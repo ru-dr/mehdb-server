@@ -11,7 +11,10 @@ router.get('/', (req, res) => {
 });
 
 router.get('/agepops', agePopsController.getAgePops);
-router.post('/login', loginController.login);
+
+router.post('/login', loginController.login, (req, res) => {
+  res.status(200).json(res.locals.user);
+});
 router.post('/register', registerUser);
 router.post('/upload', uploadController.upload);
 
