@@ -17,6 +17,7 @@ router.post('/register', registerUser);
 router.post('/upload', uploadController.upload);
 
 
-router.post('/addScheme', schemeController);
+router.put('/addScheme', schemeController.addSchemeDetails);
+router.get('/getScheme', schemeController.getSchemeDetails);
 
 module.exports = router;
