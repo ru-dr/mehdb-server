@@ -41,7 +41,26 @@ const schemeDetails =  {
       console.error("Error:", error);
       return res.status(500).json({ message: "Internal server error" });
     }
-  }
+  },
+  deleteSchemeDetails: async (req, res) => {
+    try {
+      const schemeId = req.params.id; 
+      const deletedScheme = await schemeData.findByIdAndRemove(schemeId);
+      res.status(200).json(deletedScheme);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  },
+  updateSchemeDetails: async (req, res) => {
+    try {
+      const schemeId = req.params.id; 
+      const updatedSchemeData = req.body; 
+      const updatedScheme = await schemeData.findByIdAndUpdate(schemeId, updatedSchemeData, { new: true });
+      res.status(200).json(updatedScheme);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  },
 }
 
 module.exports = schemeDetails;
