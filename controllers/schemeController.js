@@ -1,4 +1,4 @@
-const schemeData = require("../models/schemeModel");
+const schemeData = require("../models/schemedata");
 const {
   getCurrentTime,
   getCurrentDate,
@@ -13,7 +13,7 @@ const schemeDetails = async (req, res) => {
 
   try {
     const newSchemeEntry = new schemeData({
-    schemename,
+      schemename,
       ministry, // Include email in the data
       desc,
       timeOfSchemeAdded,
