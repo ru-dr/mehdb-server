@@ -7,7 +7,7 @@ const {
 
 const schemeDetails = async (req, res) => {
   const { schemename, ministry, desc, place } = req.body;
-  const timeOfSchemeAdded = getCurrentTime();
+  const timeOfschemeAdded = getCurrentTime();
   const date = getCurrentDate();
   const srno = generateSrno();
 
@@ -16,8 +16,8 @@ const schemeDetails = async (req, res) => {
       schemename,
       ministry, // Include email in the data
       desc,
-      timeOfSchemeAdded,
       place,
+      timeOfschemeAdded,
       date,
       srno,
     });

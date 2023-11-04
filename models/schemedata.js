@@ -6,7 +6,7 @@ const schemeDataSchema = new mongoose.Schema({
   desc: { type: String, required: true },
   place: { type: String, required: true },
 //   status: { type: String, required: true },
-  timeOfschemeAddeed: { type: String, required: true },
+  timeOfschemeAdded: { type: String, required: true },
   date: { type: String, required: true },
   srno: { type: Number, required: true },
 });
