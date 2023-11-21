@@ -6,7 +6,7 @@ const {
   generateSrno,
 } = require("../utils/utils");
 
-const schemeDetails =  {
+const schemeDetails = {
   getSchemeDetails: async (req, res) => {
     try {
       // Check if the request includes a 'name' parameter
@@ -25,8 +25,10 @@ const schemeDetails =  {
   },
   getSchemeByName: async (req, res) => {
     try {
-      const schemeName = req.params.name; 
-      const schemes = await schemeData.find({ schemename: { $regex: schemeName, $options: 'i' } });
+      const schemeName = req.params.name;
+      const schemes = await schemeData.find({
+        schemename: { $regex: schemeName, $options: "i" },
+      });
       res.status(200).json(schemes);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -60,8 +62,19 @@ const schemeDetails =  {
   },
   deleteSchemeDetails: async (req, res) => {
     try {
-      const schemeId = req.params.id; 
+      const schemeId = req.params.id;
       const deletedScheme = await schemeData.findByIdAndRemove(schemeId);
+      res.status(200).json(deletedScheme);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  },
+  deleteSchemeDetailsByName: async (req, res) => {
+    try {
+      const schemeName = req.params.name;
+      const deletedScheme = await schemeData.findOneAndRemove({
+        schemename: schemeName,
+      });
       res.status(200).json(deletedScheme);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -69,9 +82,13 @@ const schemeDetails =  {
   },
   updateSchemeDetails: async (req, res) => {
     try {
-      const schemeId = req.params.id; 
-      const updatedSchemeData = req.body; 
-      const updatedScheme = await schemeData.findByIdAndUpdate(schemeId, updatedSchemeData, { new: true });
+      const schemeId = req.params.id;
+      const updatedSchemeData = req.body;
+      const updatedScheme = await schemeData.findByIdAndUpdate(
+        schemeId,
+        updatedSchemeData,
+        { new: true }
+      );
       res.status(200).json(updatedScheme);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -79,14 +96,18 @@ const schemeDetails =  {
   },
   updateSchemeDetailsByName: async (req, res) => {
     try {
-      const schemeName = req.params.name; 
-      const updatedSchemeData = req.body; 
-      const updatedScheme = await schemeData.findOneAndUpdate({ schemename: schemeName }, updatedSchemeData, { new: true });
+      const schemeName = req.params.name;
+      const updatedSchemeData = req.body;
+      const updatedScheme = await schemeData.findOneAndUpdate(
+        { schemename: schemeName },
+        updatedSchemeData,
+        { new: true }
+      );
       res.status(200).json(updatedScheme);
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
   },
-}
+};
 
 module.exports = schemeDetails;
