@@ -9,50 +9,57 @@ const loginController = {
     const timeOfLogin = getCurrentTime();
     const date = getCurrentDate();
     const srno = generateSrno();
+
     try {
-      registerData.findOne({
+      const existingUser = await registerData.findOne({
         $or: [{ username }, { email: username }],
-      }).then((existingUser) => {
-        if (existingUser) {
+      });
 
-          bcrypt.compare(password, existingUser.encryptedPassword).then((passwordMatch) => {
-            if (passwordMatch) {
-              const newLoginEntry = new LoginData({
-                username,
-                encryptedPassword: existingUser.encryptedPassword,
-                timeOfLogin,
-                date,
-                srno,
-              });
+      if (existingUser) {
+        const passwordMatch = await bcrypt.compare(password, existingUser.encryptedPassword);
 
-              newLoginEntry.save().then(() => {
-                return res.status(200).json({  username: existingUser.username, email: existingUser.email,role: existingUser.role, fname: existingUser.firstName, lname: existingUser.lastName, message: "Login successful" });
-              }).catch((error) => {
-                console.error("Error during login:", error);
-                return res.status(500).json({ message: "Internal server error" });
-              });
-            } else {
-              console.log("Provided Password:", password);
-              console.log(
-                "Encrypted Password in Database:",
-                existingUser.encryptedPassword
-              );
-              console.log("Password Match Result:", passwordMatch);
-
-              return res
-                .status(401)
-                .json({ message: "Invalid password. Please try again." });
-            }
+        if (passwordMatch) {
+          const newLoginEntry = new LoginData({
+            username,
+            encryptedPassword: existingUser.encryptedPassword,
+            timeOfLogin,
+            date,
+            srno,
           });
 
+          // Assuming generateAuthToken returns a Promise
+          const token = await existingUser.generateAuthToken();
+          console.log("Token:", token);
+
+          // Set the token as a cookie
+          res.cookie("token", token, {
+            expires: new Date(Date.now() + 900000),
+            httpOnly: true,
+          });
+
+          await newLoginEntry.save();
+
+          return res.status(200).json({
+            username: existingUser.username,
+            email: existingUser.email,
+            role: existingUser.role,
+            fname: existingUser.firstName,
+            lname: existingUser.lastName,
+            message: "Login successful"
+          });
+        } else {
+          console.log("Provided Password:", password);
+          console.log("Encrypted Password in Database:", existingUser.encryptedPassword);
+          console.log("Password Match Result:", passwordMatch);
+
+          return res.status(401).json({ message: "Invalid password. Please try again." });
         }
-      });
+      }
     } catch (error) {
-      console.error("Error during password comparison:", error);
+      console.error("Error during login:", error);
       return res.status(500).json({ message: "Internal server error" });
     }
-
   },
-
 };
+
 module.exports = loginController;
