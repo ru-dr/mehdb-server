@@ -26,7 +26,7 @@ const loginController = {
               });
 
               newLoginEntry.save().then(() => {
-                return res.status(200).json({ name: existingUser.name, username: existingUser.username, email: existingUser.email, message: "Login successful" });
+                return res.status(200).json({  username: existingUser.username, email: existingUser.email,role: existingUser.role, fname: existingUser.firstName, lname: existingUser.lastName, message: "Login successful" });
               }).catch((error) => {
                 console.error("Error during login:", error);
                 return res.status(500).json({ message: "Internal server error" });
