@@ -9,12 +9,28 @@ const {
 const schemeDetails =  {
   getSchemeDetails: async (req, res) => {
     try {
-      const agePops = await schemeData.find({});
-      res.status(200).json(agePops);
+      // Check if the request includes a 'name' parameter
+      const { name } = req.query;
+      if (name) {
+        const scheme = await schemeData.find({ schemename: name });
+        res.status(200).json(scheme);
+      } else {
+        // If no 'name' parameter, fetch all schemes
+        const schemes = await schemeData.find({});
+        res.status(200).json(schemes);
+      }
     } catch (error) {
-        res.status(404).json({ message: error.message });
+      res.status(404).json({ message: error.message });
     }
-    
+  },
+  getSchemeByName: async (req, res) => {
+    try {
+      const schemeName = req.params.name; 
+      const schemes = await schemeData.find({ schemename: { $regex: schemeName, $options: 'i' } });
+      res.status(200).json(schemes);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
   },
 
   addSchemeDetails: async (req, res) => {

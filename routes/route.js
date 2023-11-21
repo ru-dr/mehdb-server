@@ -19,6 +19,7 @@ router.post('/upload', uploadController.upload);
 
 router.post('/addscheme', schemeController.addSchemeDetails);
 router.get('/getscheme', schemeController.getSchemeDetails);
+router.get('/getscheme/:name', schemeController.getSchemeByName);
 router.put('/updatescheme/:id', schemeController.updateSchemeDetails)
 router.get('/deletescheme/:id', schemeController.deleteSchemeDetails)
 
