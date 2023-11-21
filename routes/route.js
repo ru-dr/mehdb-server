@@ -21,6 +21,7 @@ router.post('/addscheme', schemeController.addSchemeDetails);
 router.get('/getscheme', schemeController.getSchemeDetails);
 router.get('/getscheme/:name', schemeController.getSchemeByName);
 router.put('/updatescheme/:id', schemeController.updateSchemeDetails)
+router.put('/updatescheme/:name', schemeController.updateSchemeDetailsByName)
 router.get('/deletescheme/:id', schemeController.deleteSchemeDetails)
 
 module.exports = router;

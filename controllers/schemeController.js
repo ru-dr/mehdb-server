@@ -77,6 +77,16 @@ const schemeDetails =  {
       res.status(400).json({ message: error.message });
     }
   },
+  updateSchemeDetailsByName: async (req, res) => {
+    try {
+      const schemeName = req.params.name; 
+      const updatedSchemeData = req.body; 
+      const updatedScheme = await schemeData.findOneAndUpdate({ schemename: schemeName }, updatedSchemeData, { new: true });
+      res.status(200).json(updatedScheme);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  },
 }
 
 module.exports = schemeDetails;
