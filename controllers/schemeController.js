@@ -10,7 +10,11 @@ const schemeDetails = {
   getAllSchemes: async (req, res) => {
     try {
       const schemes = await schemeData.find({});
-      res.status(200).json(schemes);
+      res.json({
+        schemes: schemes,
+        user: req.rootUser,
+        message: "Scheme Fetched Successfully",
+      });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -22,7 +26,11 @@ const schemeDetails = {
       const schemes = await schemeData.find({
         schemename: { $regex: schemeName, $options: "i" },
       });
-      res.status(200).json(schemes);
+      res.json({
+        schemes: schemes,
+        user: req.rootUser,
+        message: `Scheme with name ${schemeName} fetched successfully`,
+      });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -35,7 +43,11 @@ const schemeDetails = {
       if (!scheme) {
         res.status(404).json({ message: "Scheme not found" });
       } else {
-        res.status(200).json(scheme);
+        res.json({
+          schemes: scheme,
+          user: req.rootUser,
+          message: `Scheme with id ${schemeId} fetched successfully`,
+        });
       }
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -44,29 +56,34 @@ const schemeDetails = {
 
   addSchemeDetails: async (req, res) => {
     const schemeDetailsArray = req.body; // Expecting an array of schemes
-
+  
     try {
       const newSchemeEntries = await schemeData.insertMany(
-        schemeDetailsArray.map(({ schemename, ministry, desc, place }) => ({
+        schemeDetailsArray.map(({ schemename, ministry, desc, place, moneygranted, moneyspent, status, leadperson }) => ({
           schemename,
           ministry,
           desc,
           place,
+          moneygranted,
+          moneyspent,
+          status,
+          leadperson,
           timeOfschemeAdded: getCurrentTime(),
           date: getCurrentDate(),
           srno: generateSrno(),
         }))
       );
-
-      return res.status(201).json({
-        message: "Schemes Added successfully!",
-        data: newSchemeEntries,
+  
+      res.json({
+        schemes: newSchemeEntries,
+        message: "Scheme added successfully",
       });
     } catch (error) {
       console.error("Error:", error);
       return res.status(500).json({ message: "Internal server error" });
     }
   },
+  
 
   deleteSchemeDetails: async (req, res) => {
     const schemeId = req.params.id;
@@ -78,7 +95,10 @@ const schemeDetails = {
         return res.status(404).json({ message: "Scheme not found." });
       }
 
-      res.status(200).json({ message: "Scheme deleted successfully." });
+      res.json({
+        schemes: deletedScheme,
+        message: `Scheme with id ${schemeId} deleted successfully`,
+      })
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -96,7 +116,10 @@ const schemeDetails = {
         return res.status(404).json({ message: "Scheme not found." });
       }
 
-      res.status(200).json({ message: "Scheme deleted successfully." });
+      res.json({
+        schemes: deletedScheme,
+        message: `Scheme with name ${schemeName} deleted successfully`,
+      })
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -111,7 +134,10 @@ const schemeDetails = {
       const deletedSchemes = await schemeData.deleteMany({
         schemename: { $in: schemeNames },
       });
-      res.status(200).json(deletedSchemes);
+      res.json({
+        schemes: deletedSchemes,
+        message: `Schemes with names ${schemeNames} deleted successfully`,
+      })
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -138,7 +164,6 @@ const schemeDetails = {
       });
 
       res
-        .status(200)
         .json({ message: "Bulk delete successful", deletedSchemes });
     } catch (error) {
       res
@@ -164,7 +189,10 @@ const schemeDetails = {
         })
       );
 
-      res.status(200).json(updatedSchemes);
+      res.json({
+        schemes: updatedSchemes,
+        message: "Scheme updated successfully",
+      })
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
