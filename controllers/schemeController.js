@@ -56,28 +56,34 @@ const schemeDetails = {
 
   addSchemeDetails: async (req, res) => {
     const schemeDetailsArray = req.body; // Expecting an array of schemes
-
+  
     try {
       const newSchemeEntries = await schemeData.insertMany(
-        schemeDetailsArray.map(({ schemename, ministry, desc, place }) => ({
+        schemeDetailsArray.map(({ schemename, ministry, desc, place, moneygranted, moneyspent, status, leadperson }) => ({
           schemename,
           ministry,
           desc,
           place,
+          moneygranted,
+          moneyspent,
+          status,
+          leadperson,
           timeOfschemeAdded: getCurrentTime(),
           date: getCurrentDate(),
           srno: generateSrno(),
         }))
       );
+  
       res.json({
         schemes: newSchemeEntries,
         message: "Scheme added successfully",
-      })
+      });
     } catch (error) {
       console.error("Error:", error);
       return res.status(500).json({ message: "Internal server error" });
     }
   },
+  
 
   deleteSchemeDetails: async (req, res) => {
     const schemeId = req.params.id;
