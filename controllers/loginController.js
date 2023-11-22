@@ -31,7 +31,7 @@ const loginController = {
           const token = await existingUser.generateAuthToken();
           console.log("Token:", token);
 
-          res.cookie('token', 'your_token_value', { secure: true, httpOnly: true, sameSite: 'None' });
+          res.cookie('token', token, { secure: true, httpOnly: true, sameSite: 'None' });
 
 
           await newLoginEntry.save();
