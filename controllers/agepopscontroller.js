@@ -4,7 +4,7 @@ const agePopsController = {
     getAgePops: async (req, res) => {
         try {
             const agePops = await AgePopulation.find({});
-            res.status(200).json({
+            res.json({
                 agePops: agePops,
                 user: req.rootUser,
                 message: "Hello from agepopscontroller.js"
