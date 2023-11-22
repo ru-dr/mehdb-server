@@ -25,7 +25,7 @@ const app = express();
 
 // test
 app.use(cors({
-  origin: 'https://sangam-dash.vercel.app',
+  origin: ['https://sangam-dash.vercel.app', 'http://localhost:5173'],
   credentials: true,  // Allow cookies to be sent with the request
 }));
 
