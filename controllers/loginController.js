@@ -31,7 +31,15 @@ const loginController = {
           const token = await existingUser.generateAuthToken();
           console.log("Token:", token);
 
-          res.cookie('token', token, { secure: true, httpOnly: true, sameSite: 'None' });
+          const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
+
+          res.cookie('token', token, {
+            secure: true,
+            httpOnly: true,
+            sameSite: 'None',
+            expires: new Date(Date.now() + oneDayInMilliseconds),
+          });
+
 
 
           await newLoginEntry.save();
