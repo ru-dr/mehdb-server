@@ -3,11 +3,12 @@ const router = require('./routes/route');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const connection = require('./DB/connection');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
 // Specify allowed origins explicitly
-const allowedOrigins = ['http://localhost:5173', "https://sangam-dash.vercel.app/"]; // Add your frontend origin(s)
+const allowedOrigins = ['http://localhost:5173', "https://sangam-dash.vercel.app"]; // Add your frontend origin(s)
 
 app.use(
   cors({
@@ -22,6 +23,13 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(router);
