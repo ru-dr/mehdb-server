@@ -7,22 +7,15 @@ const {
 } = require("../utils/utils");
 
 const schemeDetails = {
-  getSchemeDetails: async (req, res) => {
+  getAllSchemes: async (req, res) => {
     try {
-      // Check if the request includes a 'name' parameter
-      const { name } = req.query;
-      if (name) {
-        const scheme = await schemeData.find({ schemename: name });
-        res.status(200).json(scheme);
-      } else {
-        // If no 'name' parameter, fetch all schemes
-        const schemes = await schemeData.find({});
-        res.status(200).json(schemes);
-      }
+      const schemes = await schemeData.find({});
+      res.status(200).json(schemes);
     } catch (error) {
-      res.status(404).json({ message: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
+
   getSchemeByName: async (req, res) => {
     try {
       const schemeName = req.params.name;
@@ -32,6 +25,20 @@ const schemeDetails = {
       res.status(200).json(schemes);
     } catch (error) {
       res.status(400).json({ message: error.message });
+    }
+  },
+
+  getSchemeById: async (req, res) => {
+    try {
+      const schemeId = req.params.id;
+      const scheme = await schemeData.findById(schemeId);
+      if (!scheme) {
+        res.status(404).json({ message: "Scheme not found" });
+      } else {
+        res.status(200).json(scheme);
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   },
 

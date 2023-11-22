@@ -19,8 +19,11 @@ router.post("/register", registerUser);
 router.post("/upload", uploadController.upload);
 
 router.post("/addscheme", schemeController.addSchemeDetails);
-router.get("/getscheme", schemeController.getSchemeDetails);
-router.get("/getscheme/:name", schemeController.getSchemeByName);
+
+router.get('/getschemes', schemeController.getAllSchemes);
+router.get('/getschemesbyname/:name', schemeController.getSchemeByName);
+router.get('/getschemesbyid/:id', schemeController.getSchemeById);
+
 router.put("/updatescheme/:id", schemeController.updateSchemeDetails);
 router.put("/updatescheme/:name", schemeController.updateSchemeDetailsByName);
 router.post("/deletescheme/:id", schemeController.deleteSchemeDetails);
