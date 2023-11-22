@@ -1,5 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+<<<<<<< HEAD
 const agePopsController = require('../controllers/agepopscontroller');
 const loginController = require('../controllers/loginController');
 const registerUser = require('../controllers/registerController');
@@ -7,23 +8,31 @@ const uploadData = require('../models/uploadCsv');
 const uploadController = require('../controllers/uploadcsvController');
 const schemeController = require('../controllers/schemeController');
 // const authenticate = require('../middleware/authenticate');
+=======
+const agePopsController = require("../controllers/agepopscontroller");
+const loginController = require("../controllers/loginController");
+const registerUser = require("../controllers/registerController");
+const uploadData = require("../models/uploadCsv");
+const uploadController = require("../controllers/uploadcsvController");
+const schemeController = require("../controllers/schemeController");
+>>>>>>> 5b60fca572834d0ca29db7dbc075659aa9fb9546
 
-router.get('/', (req, res) => {
-  res.send('Hello World');
+router.get("/", (req, res) => {
+  res.send("Hello World");
 });
 
-router.get('/agepops', agePopsController.getAgePops);
-router.post('/login', loginController.login);
-router.post('/register', registerUser);
-router.post('/upload', uploadController.upload);
+router.get("/agepops", agePopsController.getAgePops);
+router.post("/login", loginController.login);
+router.post("/register", registerUser);
+router.post("/upload", uploadController.upload);
 
-
-router.post('/addscheme', schemeController.addSchemeDetails);
-router.get('/getscheme', schemeController.getSchemeDetails);
-router.get('/getscheme/:name', schemeController.getSchemeByName);
-router.put('/updatescheme/:id', schemeController.updateSchemeDetails)
-router.put('/updatescheme/:name', schemeController.updateSchemeDetailsByName)
-router.get('/deletescheme/:id', schemeController.deleteSchemeDetails)
+router.post("/addscheme", schemeController.addSchemeDetails);
+router.get("/getscheme", schemeController.getSchemeDetails);
+router.get("/getscheme/:name", schemeController.getSchemeByName);
+router.put("/updatescheme/:id", schemeController.updateSchemeDetails);
+router.put("/updatescheme/:name", schemeController.updateSchemeDetailsByName);
+router.get("/deletescheme/:id", schemeController.deleteSchemeDetails);
+router.get("/deletescheme/:name", schemeController.deleteSchemeDetailsByName);
 
 // temp route for testing authentication
 // router.get('/temp', authenticate, async (req, res) => {
