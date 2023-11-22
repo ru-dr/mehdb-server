@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const agePopsController = require("../controllers/agepopscontroller");
-const loginController = require("../controllers/loginController");
-const registerUser = require("../controllers/registerController");
-const uploadData = require("../models/uploadCsv");
-const uploadController = require("../controllers/uploadcsvController");
-const schemeController = require("../controllers/schemeController");
+const agePopsController = require('../controllers/agepopscontroller');
+const loginController = require('../controllers/loginController');
+const registerUser = require('../controllers/registerController');
+const uploadData = require('../models/uploadCsv');
+const uploadController = require('../controllers/uploadcsvController');
+const schemeController = require('../controllers/schemeController');
+const authenticate = require('../middleware/authenticate');
 
 router.get("/", (req, res) => {
   res.send("Hello World");
@@ -23,5 +24,15 @@ router.put("/updatescheme/:id", schemeController.updateSchemeDetails);
 router.put("/updatescheme/:name", schemeController.updateSchemeDetailsByName);
 router.get("/deletescheme/:id", schemeController.deleteSchemeDetails);
 router.get("/deletescheme/:name", schemeController.deleteSchemeDetailsByName);
+
+// temp route for testing authentication
+router.get('/temp', authenticate, async (req, res) => {
+  // console.log("Hello from tempController.js")
+  const resObj = {
+    user: req.rootUser,
+    message: "Hello from tempController.js"
+  }
+  res.send(resObj);
+})
 
 module.exports = router;
