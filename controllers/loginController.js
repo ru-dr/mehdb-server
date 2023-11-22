@@ -33,8 +33,9 @@ const loginController = {
 
           res.cookie("token", token, {
             expires: new Date(Date.now() + 900000),
-            // httpOnly: true,
+            httpOnly: true,
             // secure: true,
+            sameSite: "None",
           });
 
           await newLoginEntry.save();
