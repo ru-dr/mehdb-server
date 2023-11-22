@@ -31,11 +31,11 @@ const loginController = {
           const token = await existingUser.generateAuthToken();
           console.log("Token:", token);
 
-          // Set the token as a cookie
           res.cookie("token", token, {
             expires: new Date(Date.now() + 900000),
             httpOnly: true,
-            secure: true,
+            // secure: true,
+            sameSite: "None",
           });
 
           await newLoginEntry.save();
