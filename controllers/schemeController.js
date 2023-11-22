@@ -69,13 +69,34 @@ const schemeDetails = {
   },
 
   deleteSchemeDetails: async (req, res) => {
-    const schemeIds = req.body.schemeIds; // Expecting an array of scheme IDs
+    const schemeId = req.params.id;
 
     try {
-      const deletedSchemes = await schemeData.deleteMany({
-        _id: { $in: schemeIds },
+      const deletedScheme = await schemeData.findByIdAndDelete(schemeId);
+
+      if (!deletedScheme) {
+        return res.status(404).json({ message: "Scheme not found." });
+      }
+
+      res.status(200).json({ message: "Scheme deleted successfully." });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  },
+
+  deleteSchemeDetailsByName: async (req, res) => {
+    const schemeName = req.params.name;
+
+    try {
+      const deletedScheme = await schemeData.findOneAndDelete({
+        schemename: schemeName,
       });
-      res.status(200).json(deletedSchemes);
+
+      if (!deletedScheme) {
+        return res.status(404).json({ message: "Scheme not found." });
+      }
+
+      res.status(200).json({ message: "Scheme deleted successfully." });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -127,12 +148,14 @@ const schemeDetails = {
   },
 
   updateSchemeDetails: async (req, res) => {
-    const updatedSchemeDataArray = req.body; // Expecting an array of updated scheme data
+    const updatedSchemeDataArray = Array.isArray(req.body)
+      ? req.body
+      : [req.body];
 
     try {
       const updatedSchemes = await Promise.all(
         updatedSchemeDataArray.map(async (updatedSchemeData) => {
-          const schemeId = updatedSchemeData._id; // Assuming each updated scheme data includes the scheme ID
+          const schemeId = updatedSchemeData._id;
           return await schemeData.findByIdAndUpdate(
             schemeId,
             updatedSchemeData,
@@ -142,21 +165,6 @@ const schemeDetails = {
       );
 
       res.status(200).json(updatedSchemes);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  },
-
-  updateSchemeDetailsByName: async (req, res) => {
-    try {
-      const schemeName = req.params.name;
-      const updatedSchemeData = req.body;
-      const updatedScheme = await schemeData.findOneAndUpdate(
-        { schemename: schemeName },
-        updatedSchemeData,
-        { new: true }
-      );
-      res.status(200).json(updatedScheme);
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
