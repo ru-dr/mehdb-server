@@ -8,6 +8,7 @@ const uploadController = require('../controllers/uploadcsvController');
 const schemeController = require('../controllers/schemeController');
 const authenticate = require('../middleware/authenticate');
 
+
 router.get("/", (req, res) => {
   res.send("Hello World");
 });
@@ -22,8 +23,9 @@ router.get("/getscheme", schemeController.getSchemeDetails);
 router.get("/getscheme/:name", schemeController.getSchemeByName);
 router.put("/updatescheme/:id", schemeController.updateSchemeDetails);
 router.put("/updatescheme/:name", schemeController.updateSchemeDetailsByName);
-router.get("/deletescheme/:id", schemeController.deleteSchemeDetails);
-router.get("/deletescheme/:name", schemeController.deleteSchemeDetailsByName);
+router.post("/deletescheme/:id", schemeController.deleteSchemeDetails);
+router.post("/deletescheme/:name", schemeController.deleteSchemeDetailsByName);
+router.post('/bulkdelete', schemeController.bulkDelete);
 
 // temp route for testing authentication
 router.get('/temp', authenticate, async (req, res) => {

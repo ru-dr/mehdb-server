@@ -51,12 +51,10 @@ const schemeDetails = {
         }))
       );
 
-      return res
-        .status(201)
-        .json({
-          message: "Schemes Added successfully!",
-          data: newSchemeEntries,
-        });
+      return res.status(201).json({
+        message: "Schemes Added successfully!",
+        data: newSchemeEntries,
+      });
     } catch (error) {
       console.error("Error:", error);
       return res.status(500).json({ message: "Internal server error" });
@@ -64,39 +62,84 @@ const schemeDetails = {
   },
 
   deleteSchemeDetails: async (req, res) => {
+    const schemeIds = req.body.schemeIds; // Expecting an array of scheme IDs
+
     try {
-      const schemeId = req.params.id;
-      const deletedScheme = await schemeData.findByIdAndRemove(schemeId);
-      res.status(200).json(deletedScheme);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  },
-  deleteSchemeDetailsByName: async (req, res) => {
-    try {
-      const schemeName = req.params.name;
-      const deletedScheme = await schemeData.findOneAndRemove({
-        schemename: schemeName,
+      const deletedSchemes = await schemeData.deleteMany({
+        _id: { $in: schemeIds },
       });
-      res.status(200).json(deletedScheme);
+      res.status(200).json(deletedSchemes);
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
   },
-  updateSchemeDetails: async (req, res) => {
+
+  deleteSchemeDetailsByName: async (req, res) => {
+    const schemeNames = Array.isArray(req.body.schemeNames)
+      ? req.body.schemeNames
+      : [req.body.schemeNames];
+
     try {
-      const schemeId = req.params.id;
-      const updatedSchemeData = req.body;
-      const updatedScheme = await schemeData.findByIdAndUpdate(
-        schemeId,
-        updatedSchemeData,
-        { new: true }
-      );
-      res.status(200).json(updatedScheme);
+      const deletedSchemes = await schemeData.deleteMany({
+        schemename: { $in: schemeNames },
+      });
+      res.status(200).json(deletedSchemes);
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
   },
+
+  bulkDelete: async (req, res) => {
+    try {
+      // Expecting an array of identifiers in the request body
+      const identifiers = req.body.identifiers;
+
+      if (
+        !identifiers ||
+        !Array.isArray(identifiers) ||
+        identifiers.length === 0
+      ) {
+        return res
+          .status(400)
+          .json({ message: "Invalid or empty identifiers array." });
+      }
+
+      // Assuming identifiers are scheme IDs, you can use deleteMany to delete multiple documents
+      const deletedSchemes = await schemeData.deleteMany({
+        _id: { $in: identifiers },
+      });
+
+      res
+        .status(200)
+        .json({ message: "Bulk delete successful", deletedSchemes });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
+  },
+
+  updateSchemeDetails: async (req, res) => {
+    const updatedSchemeDataArray = req.body; // Expecting an array of updated scheme data
+
+    try {
+      const updatedSchemes = await Promise.all(
+        updatedSchemeDataArray.map(async (updatedSchemeData) => {
+          const schemeId = updatedSchemeData._id; // Assuming each updated scheme data includes the scheme ID
+          return await schemeData.findByIdAndUpdate(
+            schemeId,
+            updatedSchemeData,
+            { new: true }
+          );
+        })
+      );
+
+      res.status(200).json(updatedSchemes);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  },
+
   updateSchemeDetailsByName: async (req, res) => {
     try {
       const schemeName = req.params.name;
