@@ -14,8 +14,8 @@ router.get("/", (req, res) => {
 });
 
 router.get("/agepops", authenticate, agePopsController.getAgePops);
-router.post("/login",authenticate ,loginController.login);
-router.post("/register",authenticate, registerUser);
+router.post("/login" ,loginController.login);
+router.post("/register", registerUser);
 router.post("/upload",authenticate,uploadController.upload);
 
 router.post("/addscheme",authenticate,schemeController.addSchemeDetails);
