@@ -13,22 +13,22 @@ router.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-router.get("/agepops", agePopsController.getAgePops);
-router.post("/login", loginController.login);
-router.post("/register", registerUser);
-router.post("/upload", uploadController.upload);
+router.get("/agepops", authenticate, agePopsController.getAgePops);
+router.post("/login",authenticate ,loginController.login);
+router.post("/register",authenticate, registerUser);
+router.post("/upload",authenticate,uploadController.upload);
 
-router.post("/addscheme", schemeController.addSchemeDetails);
+router.post("/addscheme",authenticate,schemeController.addSchemeDetails);
 
-router.get('/getschemes', schemeController.getAllSchemes);
-router.get('/getschemesbyname/:name', schemeController.getSchemeByName);
-router.get('/getschemesbyid/:id', schemeController.getSchemeById);
+router.get('/getschemes',authenticate, schemeController.getAllSchemes);
+router.get('/getschemesbyname/:name',authenticate,schemeController.getSchemeByName);
+router.get('/getschemesbyid/:id', authenticate,schemeController.getSchemeById);
 
-router.put("/updatescheme/:id", schemeController.updateSchemeDetails);
+router.put("/updatescheme/:id", authenticate,schemeController.updateSchemeDetails);
 // router.put("/updatescheme/:name", schemeController.updateSchemeDetailsByName);
-router.post("/deletescheme/:id", schemeController.deleteSchemeDetails);
-router.post("/deletescheme/:name", schemeController.deleteSchemeDetailsByName);
-router.post('/bulkdelete', schemeController.bulkDelete);
+router.post("/deletescheme/:id", authenticate,schemeController.deleteSchemeDetails);
+router.post("/deletescheme/:name", authenticate,schemeController.deleteSchemeDetailsByName);
+router.post('/bulkdelete', authenticate,schemeController.bulkDelete);
 
 // temp route for testing authentication
 router.get('/temp', authenticate, async (req, res) => {
