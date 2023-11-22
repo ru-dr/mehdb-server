@@ -8,20 +8,26 @@ const cookieParser = require('cookie-parser');
 const app = express();
 
 // Specify allowed origins explicitly
-const allowedOrigins = ['http://localhost:5173', "https://sangam-dash.vercel.app"]; // Add your frontend origin(s)
+// const allowedOrigins = ['http://localhost:5173', "https://sangam-dash.vercel.app"]; // Add your frontend origin(s)
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error('Not allowed by CORS'));
+//       }
+//     },
+//     credentials: true,
+//   })
+// );
+
+// test
+app.use(cors({
+  origin: 'https://sangam-dash.vercel.app',
+  credentials: true,  // Allow cookies to be sent with the request
+}));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
