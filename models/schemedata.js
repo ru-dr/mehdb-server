@@ -9,7 +9,6 @@ const schemeDataSchema = new mongoose.Schema({
   moneyspent: { type: String, required: true },
   status: { type: String, required: true },
   leadperson: { type: String, required: true },
-  lasteditedby: { type: String, required: true },
   timeOfschemeAdded: { type: String, required: true },
   date: { type: String, required: true },
   srno: { type: Number, required: true },
