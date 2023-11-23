@@ -184,7 +184,7 @@ const schemeDetails = {
           const schemeId = updatedSchemeData._id;
 
           // Set lasteditedby field to the username
-          updatedSchemeData.lasteditedby = req.rootUser.username;
+          updatedSchemeData.lasteditedby = req.rootUser.firstName;
 
           return await schemeData.findByIdAndUpdate(
             schemeId,
