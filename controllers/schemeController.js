@@ -68,6 +68,7 @@ const schemeDetails = {
           moneyspent,
           status,
           leadperson,
+          lasteditedby,
           timeOfschemeAdded: getCurrentTime(),
           date: getCurrentDate(),
           srno: generateSrno(),
