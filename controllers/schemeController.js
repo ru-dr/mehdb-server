@@ -56,10 +56,10 @@ const schemeDetails = {
 
   addSchemeDetails: async (req, res) => {
     const schemeDetailsArray = req.body; // Expecting an array of schemes
-  
+
     try {
       const newSchemeEntries = await schemeData.insertMany(
-        schemeDetailsArray.map(({ schemename, ministry, desc, place, moneygranted, moneyspent, status, leadperson }) => ({
+        schemeDetailsArray.map(({ schemename, ministry, desc, place, moneygranted, moneyspent, status, leadperson, lasteditedby }) => ({
           schemename,
           ministry,
           desc,
@@ -68,12 +68,13 @@ const schemeDetails = {
           moneyspent,
           status,
           leadperson,
+          lasteditedby,
           timeOfschemeAdded: getCurrentTime(),
           date: getCurrentDate(),
           srno: generateSrno(),
         }))
       );
-  
+
       res.json({
         schemes: newSchemeEntries,
         message: "Scheme added successfully",
@@ -83,7 +84,7 @@ const schemeDetails = {
       return res.status(500).json({ message: "Internal server error" });
     }
   },
-  
+
 
   deleteSchemeDetails: async (req, res) => {
     const schemeId = req.params.id;
@@ -181,6 +182,10 @@ const schemeDetails = {
       const updatedSchemes = await Promise.all(
         updatedSchemeDataArray.map(async (updatedSchemeData) => {
           const schemeId = updatedSchemeData._id;
+
+          // Set lasteditedby field to the username
+          updatedSchemeData.lasteditedby = req.rootUser.username;
+
           return await schemeData.findByIdAndUpdate(
             schemeId,
             updatedSchemeData,
@@ -192,7 +197,7 @@ const schemeDetails = {
       res.json({
         schemes: updatedSchemes,
         message: "Scheme updated successfully",
-      })
+      });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
