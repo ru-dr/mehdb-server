@@ -25,7 +25,6 @@ router.get('/getschemesbyname/:name',authenticate,schemeController.getSchemeByNa
 router.get('/getschemesbyid/:id', authenticate,schemeController.getSchemeById);
 
 router.put("/updatescheme/:id", authenticate,schemeController.updateSchemeDetails);
-// router.put("/updatescheme/:name", schemeController.updateSchemeDetailsByName);
 router.post("/deletescheme/:id", authenticate,schemeController.deleteSchemeDetails);
 router.post("/deletescheme/:name", authenticate,schemeController.deleteSchemeDetailsByName);
 router.post('/bulkdelete', authenticate,schemeController.bulkDelete);
