@@ -68,7 +68,7 @@ const schemeDetails = {
       const totalSchemes = data.length;
 
       const newSchemeEntries = await schemeData.insertMany(
-        schemeDetailsArray.map(({ schemename, ministry, desc, place, moneygranted, moneyspent, status, leadperson, lasteditedby }, index) => ({
+        schemeDetailsArray.map(({ schemename, ministry, desc, place, moneygranted, moneyspent, status, leadperson }, index) => ({
           schemename,
           ministry,
           desc,
@@ -77,7 +77,7 @@ const schemeDetails = {
           moneyspent,
           status,
           leadperson,
-          lasteditedby,
+          lasteditedby : req.rootUser.firstName,
           timeOfschemeAdded: getCurrentTime(),
           date: getCurrentDate(),
           srno: totalSchemes + index + 1,
