@@ -3,8 +3,9 @@ const schemeData = require("../models/schemedata");
 const {
   getCurrentTime,
   getCurrentDate,
-  generateSrno,
 } = require("../utils/utils");
+
+
 
 const schemeDetails = {
   getAllSchemes: async (req, res) => {
@@ -55,11 +56,19 @@ const schemeDetails = {
   },
 
   addSchemeDetails: async (req, res) => {
-    const schemeDetailsArray = req.body; // Expecting an array of schemes
+    let schemeDetailsArray = req.body;
+
+    // If it's a single entry, convert it to an array
+    if (!Array.isArray(schemeDetailsArray)) {
+      schemeDetailsArray = [schemeDetailsArray];
+    }
 
     try {
+      const data = await schemeData.find({});
+      const totalSchemes = data.length;
+
       const newSchemeEntries = await schemeData.insertMany(
-        schemeDetailsArray.map(({ schemename, ministry, desc, place, moneygranted, moneyspent, status, leadperson, lasteditedby }) => ({
+        schemeDetailsArray.map(({ schemename, ministry, desc, place, moneygranted, moneyspent, status, leadperson, lasteditedby }, index) => ({
           schemename,
           ministry,
           desc,
@@ -71,7 +80,7 @@ const schemeDetails = {
           lasteditedby,
           timeOfschemeAdded: getCurrentTime(),
           date: getCurrentDate(),
-          srno: generateSrno(),
+          srno: totalSchemes + index + 1,
         }))
       );
 
@@ -84,6 +93,8 @@ const schemeDetails = {
       return res.status(500).json({ message: "Internal server error" });
     }
   },
+
+
 
 
   deleteSchemeDetails: async (req, res) => {

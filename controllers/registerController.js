@@ -10,7 +10,10 @@ const registerUser = async (req, res) => {
   const { username, password, role, firstName, lastName, email } = req.body;
   const timeOfRegister = getCurrentTime();
   const date = getCurrentDate();
-  const srno = generateSrno();
+
+  const data = await registerData.find({});
+  const srno = data.length + 1;
+  console.log("Srno:", srno);
 
   try {
     const existingUser = await registerData.findOne({
