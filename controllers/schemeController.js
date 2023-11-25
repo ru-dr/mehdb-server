@@ -88,7 +88,7 @@ const schemeDetails = {
             status,
             progress,
             leadperson,
-            lasteditedby,
+            lasteditedby: req.rootUser.firstName,
             timeOfschemeAdded: getCurrentTime(),
             date: getCurrentDate(),
             srno: totalSchemes + index + 1,
