@@ -19,7 +19,7 @@ router.post("/login", loginController.login);
 router.post("/register", authenticate, registerUser);
 router.post("/upload", authenticate, uploadController.upload);
 
-router.post("/addscheme", schemeController.addSchemeDetails);
+router.post("/addscheme",authenticate, schemeController.addSchemeDetails);
 
 router.get('/getschemes', authenticate, schemeController.getAllSchemes);
 router.get('/getschemesbyname/:name', authenticate, schemeController.getSchemeByName);
