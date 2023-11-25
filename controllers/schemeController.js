@@ -1,11 +1,6 @@
 const { get } = require("mongoose");
 const schemeData = require("../models/schemedata");
-const {
-  getCurrentTime,
-  getCurrentDate,
-} = require("../utils/utils");
-
-
+const { getCurrentTime, getCurrentDate } = require("../utils/utils");
 
 const schemeDetails = {
   getAllSchemes: async (req, res) => {
@@ -68,20 +63,37 @@ const schemeDetails = {
       const totalSchemes = data.length;
 
       const newSchemeEntries = await schemeData.insertMany(
-        schemeDetailsArray.map(({ schemename, ministry, desc, place, moneygranted, moneyspent, status, leadperson }, index) => ({
-          schemename,
-          ministry,
-          desc,
-          place,
-          moneygranted,
-          moneyspent,
-          status,
-          leadperson,
-          lasteditedby : req.rootUser.firstName,
-          timeOfschemeAdded: getCurrentTime(),
-          date: getCurrentDate(),
-          srno: totalSchemes + index + 1,
-        }))
+        schemeDetailsArray.map(
+          (
+            {
+              schemename,
+              ministry,
+              desc,
+              place,
+              moneygranted,
+              moneyspent,
+              status,
+              progress = (moneyspent / moneygranted) * 100,
+              leadperson,
+              lasteditedby,
+            },
+            index
+          ) => ({
+            schemename,
+            ministry,
+            desc,
+            place,
+            moneygranted,
+            moneyspent,
+            status,
+            progress,
+            leadperson,
+            lasteditedby,
+            timeOfschemeAdded: getCurrentTime(),
+            date: getCurrentDate(),
+            srno: totalSchemes + index + 1,
+          })
+        )
       );
 
       res.json({
@@ -93,9 +105,6 @@ const schemeDetails = {
       return res.status(500).json({ message: "Internal server error" });
     }
   },
-
-
-
 
   deleteSchemeDetails: async (req, res) => {
     const schemeId = req.params.id;
@@ -110,7 +119,7 @@ const schemeDetails = {
       res.json({
         schemes: deletedScheme,
         message: `Scheme with id ${schemeId} deleted successfully`,
-      })
+      });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -131,7 +140,7 @@ const schemeDetails = {
       res.json({
         schemes: deletedScheme,
         message: `Scheme with name ${schemeName} deleted successfully`,
-      })
+      });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -149,7 +158,7 @@ const schemeDetails = {
       res.json({
         schemes: deletedSchemes,
         message: `Schemes with names ${schemeNames} deleted successfully`,
-      })
+      });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -175,8 +184,7 @@ const schemeDetails = {
         _id: { $in: identifiers },
       });
 
-      res
-        .json({ message: "Bulk delete successful", deletedSchemes });
+      res.json({ message: "Bulk delete successful", deletedSchemes });
     } catch (error) {
       res
         .status(500)
@@ -196,6 +204,20 @@ const schemeDetails = {
 
           // Set lasteditedby field to the username
           updatedSchemeData.lasteditedby = req.rootUser.firstName;
+          
+          // Get moneyspent and moneygranted from updatedSchemeData
+          let { moneyspent, moneygranted } = updatedSchemeData;
+
+          // Convert moneyspent and moneygranted to numbers
+          moneyspent = parseFloat(moneyspent);
+          moneygranted = parseFloat(moneygranted);
+
+          // Check if moneyspent and moneygranted are valid numbers
+          if (isNaN(moneyspent) || isNaN(moneygranted)) {
+            throw new Error('Invalid money values');
+          }
+
+          updatedSchemeData.progress = (moneyspent / moneygranted) * 100;
 
           return await schemeData.findByIdAndUpdate(
             schemeId,
@@ -212,7 +234,7 @@ const schemeDetails = {
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
-  },
+  };
 };
 
 module.exports = schemeDetails;
